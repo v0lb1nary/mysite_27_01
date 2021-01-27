@@ -3,56 +3,43 @@
 {% block title%} {{ post.titulo}} {% endblock %}
 
 {% block content%}
-    <h1> {{ post.titulo }}</h1>
-    <p class="data"> 
-        Publicado em {{ post.data_publicacao }} por {{ post.autor }}
+<h1> {{ post.titulo }}</h1>
+<p class="data">
+    Publicado em {{ post.data_publicacao }} por {{ post.autor }}
+</p>
+
+{{ post.mensagem|linebreaks }}
+
+<p>
+    <a href="{% url 'blog:compartilhar_postagens' post.id %}">Compartilhar a postagem </a>
+</p>
+
+{% with comentarios.count as total_comentarios %}
+<h2> {{ total_comentarios}} comentado por {{ total_comentarios|pluralize}}</h2>
+{% endwith %}
+{% for comentario in comentarios %}
+<div class="info">
+    <p class="info">
+        Comentario {{ forloop.counter }} por {{ comentario.nome}}
+        {{ comentario.data_criacao }}
     </p>
+    {{ comentario.mensagem|linebreaks }}
+</div>
+{% empty %}
+<p>Não há nenhum comentário</p>
 
-    {{ post.mensagem|linebreaks }}
+{% if novo_comentario %}
 
-    <hr>
+<h2> Seu comentário foi adicionado com sucesso </h2>
+{% else %}
+<h2>Adicione um novo comentário </h2>
+<form method="post">
+    {{ formulario_comentario.as_p }}
+    {% csrf_token %}
+    <p> <input type="submit" value="Adicionar comentário"></p>
+</form>
+{% endif %}
 
-    <p>
-        <a href="{% url 'blog:compartilhar_postagens' post_id %}">Compartilhar a postagem</a>
-    </p>
+{% endfor %}
 
-    
-    {% with cometarios.cont as total_comentarios %}
-
-        <h2> {{ total_comentarios }} comentado por {{ total_comentarios|pluralize }}</h2>
-        
-    {% endwith %}
-
-    
-    {% for comentario in comentarios %}
-
-        <div class="info">
-            <p class="info">
-                Comentario {{ forloop.counter }} por {{ comentario.nome }}
-                {{ comentario.data_criacao }}
-            </p>
-            {{ comentario.mensagem|linebreaks }}
-        </div>
-
-    {% empty %}
-
-        <p class="info">Não a comentarios</p>
-        
-        {% if novo_comentario %}
-
-            <h2> Seu comentário foi adicionado com sucesso </h2>
-
-        {% else %}
-
-            <h2>Adicione um novo comentário </h2>
-            <form method="post">
-                {{ formulario_comentario.as_p }}
-                {% csrf_token %}
-                <p> <input type="submit" value="Adicionar comentário"></p>
-            </form>
-
-        {% endif %}
-
-    {% endfor %}
-        
 {% endblock %}
