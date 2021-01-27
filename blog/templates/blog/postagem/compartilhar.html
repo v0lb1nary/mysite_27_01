@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Compartilhar Postagens {% endblock title %}
+    
+
+{% block content %}
+
+    
+    {% if sent %}
+        <h1>E-mail enviado com sucesso</h1>
+        <p>{{ post.titulo }} foi envidada com sucesso para {{ form.cleaned_data.para }}</p>
+    
+    {% else %}
+        <h1>Compartilhado {{ post.titulo }} por e-mail</h1>   
+
+        <form method="post">
+
+            {{ form.as_p }}     <!-- Renderizar o formulario como paragrafo -->
+            {% csrf_token %}    <!-- Criação de um codico de proteção de ataques -->
+
+            <input type="submit" value="Enviar e-mail">
+
+        </form>
+    
+    {% endif %}
+         
+
+
+{% endblock content %}
+    

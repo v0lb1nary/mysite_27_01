@@ -122,7 +122,7 @@ STATIC_URL = '/static/'
 
 # Para envio de email
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'python.django@gmail.com'
+EMAIL_HOST_USER = 'pyhton.django@gmail.com'
 EMAIL_HOST_PASSWORD = '123@mudar'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

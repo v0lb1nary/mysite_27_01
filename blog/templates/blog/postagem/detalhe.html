@@ -10,4 +10,32 @@
 
     {{ post.mensagem|linebreaks }}
 
+    <hr>
+
+    <p>
+        <a href="{% url 'blog:compartilhar_postagem' post_id %}">Compartilhar a postagem</a>
+    </p>
+
+    
+    {% with cometarios.cont as total_comentarios %}
+
+        <h2> {{ total_comentarios }} comentado por {{ total_comentarios|pluralize }}</h2>
+        
+    {% endwith %}
+
+    
+    {% for comentario in comentarios %}
+        <div class="info">
+            <p class="info">
+                Comentario {{ forloop.counter }} por {{ comentario.nome }}
+                {{ comentario.data_criacao }}
+            </p>
+            {{ comentario.mensagem|linebreaks }}
+        </div>
+        {% empty %}
+        <p class="info">Não a comentarios</p>
+    {% endfor %}
+        
+        
+
 {% endblock %}

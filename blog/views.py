@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Postagem
+from .models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .forms import *
 
@@ -25,6 +25,24 @@ def detalhe_postagem(request, ano, mes, dia, rotulo):
                             data_publicacao__month = mes, 
                             data_publicacao__day = dia)
     return render(request, 'blog/postagem/detalhe.html', { 'post' : post})
+    comentarios = post.comentarios.filter(ativo=True)
+
+    novo_comentario = None
+
+    if request.method == 'POST':
+        forulario_cometario = forulario_cometario(data=request.POST)
+
+        if forulario_cometario.is_valid():
+            novo_comentario = forulario_cometario.save(conmint=False)
+            novo_comentario.post = post
+            novo_comentario.save()
+        else:
+            forulario_cometario = FormularioComentarios()
+        
+        return render(request, 'blog/postagem/detalhe.html', 
+        {'post':post
+
+        })
 
 def compartilhar_postagem(request, post_id):
     post = get_object_or_404(Postagem, id=post_id, status='publicado')
@@ -37,11 +55,12 @@ def compartilhar_postagem(request, post_id):
             cd = form.cleaned_data 
             post_url = request.build_absolute_url(post.get_absolute_url())
             assunto = f"{cd['nome']} recomendado que vc leia" f"{ post.titulo }"
-            mensagem = f"Leia {post.titulo} em {post.url}\n \n" f"{cd['nome']}\s comentario: " f"{cd['comentarios']}"  
+            mensagem = f"Leia {post.titulo} em {post.url}\n \n" f"{cd['nome']}\'s comentario: {cd['comentarios']}"  
             send_email (assunto, mensagem, 'pyhton.django@gmail.com', [cd['para']])
             sent = True
     
     else:
         form = FormularioPostEmail()
 
-        return render(request, 'blog/postagem/compartilhar.html,' {'post':post, 'form':form, 'sent':sent})
+        return render(request, 'blog/postagem/compartilhar.html', {'post':post, 'form':form, 'sent':sent})
+
