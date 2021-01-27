@@ -1,17 +1,14 @@
 from django import forms
-from .models import *
 from django.forms import ModelForm
+from .models import Comentarios
 
-class PostEmailForm(forms.Form):
-    """Form definition for PostEmail."""
+class FormularioPostEmail(forms.Form):
     nome = forms.CharField(max_length=25)
     email = forms.EmailField()
-    para = forms.CharField()
-    comentario = forms.CharField(required=False, widget=forms.Textarea)
+    para = forms.EmailField()
+    comentarios = forms.CharField(required=False, widget=forms.Textarea)
 
-class ComentariosForm(ModelForm):
+class FormularioComentarios(ModelForm):
     class Meta:
-        model = Comentario
-        fields = ['nome','email','mensagem',]
-
-
+        model = Comentarios
+        fields = ['nome', 'email', 'mensagem']

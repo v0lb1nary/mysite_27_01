@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
-from .models import *
+from .models import Postagem, Comentarios
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .forms import *
+from .forms import FormularioPostEmail, FormularioComentarios
 from django.core.mail import send_mail
 
 def lista_postagem(request):
@@ -25,27 +25,23 @@ def detalhe_postagem(request, ano, mes, dia, rotulo):
                             data_publicacao__year = ano,
                             data_publicacao__month = mes, 
                             data_publicacao__day = dia)
-    return render(request, 'blog/postagem/detalhe.html', { 'post' : post})
+    
+    #Lista dos comentários ativos para esta postagem
     comentarios = post.comentarios.filter(ativo=True)
-
     novo_comentario = None
-
     if request.method == 'POST':
-        forulario_cometario = forulario_cometario(data=request.POST)
-
-        if forulario_cometario.is_valid():
-            novo_comentario = forulario_cometario.save(conmint=False)
+        formulario_comentario = FormularioComentarios(data=request.POST)
+        if formulario_comentario.is_valid():
+            novo_comentario = formulario_comentario.save(commit=False)
             novo_comentario.post = post
             novo_comentario.save()
-        else:
-            forulario_cometario = FormularioComentarios()
-        
-        return render(request, 'blog/postagem/detalhe.html', { 'post' : post,
+    else:
+        formulario_comentario = FormularioComentarios()
+    return render(request, 'blog/postagem/detalhe.html', { 'post' : post,
                                                             'comentarios': comentarios,
                                                             'novo_comentario': novo_comentario,
                                                             'formulario_comentario': formulario_comentario})
-
-
+                                                            
 def compartilhar_postagem(request, post_id):
     post = get_object_or_404(Postagem, id=post_id, status='publicado')
     sent = False
@@ -65,4 +61,3 @@ def compartilhar_postagem(request, post_id):
         form = FormularioPostEmail()
 
         return render(request, 'blog/postagem/compartilhar.html', {'post':post, 'form':form, 'sent':sent})
-
