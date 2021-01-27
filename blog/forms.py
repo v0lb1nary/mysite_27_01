@@ -7,7 +7,7 @@ class PostEmailForm(forms.Form):
     nome = forms.CharField(max_length=25)
     email = forms.EmailField()
     para = forms.CharField()
-    comentario = forms.CharField(required=None, widget=forms.Textarea)
+    comentario = forms.CharField(required=False, widget=forms.Textarea)
 
 class ComentariosForm(ModelForm):
     class Meta:

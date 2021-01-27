@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .forms import *
+from django.core.mail import send_mail
 
 def lista_postagem(request):
     lista_objetos = Postagem.publicado.all()
@@ -39,10 +40,11 @@ def detalhe_postagem(request, ano, mes, dia, rotulo):
         else:
             forulario_cometario = FormularioComentarios()
         
-        return render(request, 'blog/postagem/detalhe.html', 
-        {'post':post
+        return render(request, 'blog/postagem/detalhe.html', { 'post' : post,
+                                                            'comentarios': comentarios,
+                                                            'novo_comentario': novo_comentario,
+                                                            'formulario_comentario': formulario_comentario})
 
-        })
 
 def compartilhar_postagem(request, post_id):
     post = get_object_or_404(Postagem, id=post_id, status='publicado')
@@ -52,11 +54,11 @@ def compartilhar_postagem(request, post_id):
         form = FormularioPostEmail(request.POST)
 
         if form.is_valed():
-            cd = form.cleaned_data 
-            post_url = request.build_absolute_url(post.get_absolute_url())
-            assunto = f"{cd['nome']} recomendado que vc leia" f"{ post.titulo }"
-            mensagem = f"Leia {post.titulo} em {post.url}\n \n" f"{cd['nome']}\'s comentario: {cd['comentarios']}"  
-            send_email (assunto, mensagem, 'pyhton.django@gmail.com', [cd['para']])
+            cd = form.cleaned_data
+            post_url = request.build_absolute_uri(post.get_absolute_url())
+            assunto = f"{cd['nome']} recomendado que você leia" f"{ post.titulo }"
+            mensagem = f"Leia {post.titulo} em {post_url}\n\n" f"{cd['nome']}\'s comentarios: {cd ['comentarios']}"
+            send_mail(assunto, mensagem, 'pyhton.django@gmail.com', [cd['para']])
             sent = True
     
     else:
