@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import *
+from .models import Postagem, Comentarios
 
 #usado para adicionar o blog no site de administração
 @admin.register(Postagem)
@@ -12,16 +12,8 @@ class PostagemAdmin(admin.ModelAdmin):
     prepopulated_fields = {'rotulo':('titulo',)}
     raw_id_fields = ('autor',)
 
-
-@admin.register(Comentario)
+@admin.register(Comentarios)
 class ComentariosAdmin(admin.ModelAdmin):
-    '''Admin View for Comentarios'''
-
-    list_display = ('nome','email')
-    list_filter = ('ativo','data_criacao',)
-
-    # raw_id_fields = ('',)
-    # readonly_fields = ('',)
-    search_fields = ('nome','email')
-    # date_hierarchy = ''
-    # ordering = ('',)
+    list_display = ('nome', 'email', 'post', 'data_criacao', 'ativo')
+    list_filter = ('ativo', 'data_criacao', 'data_atualizacao')
+    search_fields = ('nome', 'email', 'mensagem')
