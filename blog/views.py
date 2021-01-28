@@ -54,6 +54,7 @@ def compartilhar_postagem(request, post_id):
         form = FormularioPostEmail(request.POST)
 
         if form.is_valed():
+            
             cd = form.cleaned_data
             post_url = request.build_absolute_uri(post.get_absolute_url())
             assunto = f"{cd['nome']} recomendado que você leia" f"{ post.titulo }"
